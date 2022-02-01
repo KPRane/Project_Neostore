@@ -5,7 +5,9 @@ import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { useHistory } from "react-router-dom";
 import { getchangepassword } from "../config/MyService"
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 const regForEmail = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
 export default function Otp() {
@@ -14,7 +16,9 @@ export default function Otp() {
     let [email, setEmail] = useState("");
     let [code, setCode] = useState("");
     let [confirmpassword, setConfirmpassword] = useState("");
-
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
 
     const back = () => {
         history.push("/forgot")
@@ -28,10 +32,10 @@ export default function Otp() {
         getchangepassword(data)
             .then((res) => {
                 if (res.data.err) {
-                    alert(res.data.err);
+                    warning(res.data.err);
                 }
                 else {
-                    alert(res.data.msg);
+                    success(res.data.msg);
                     history.push("/");
                 }
 
@@ -68,7 +72,7 @@ export default function Otp() {
                     </Form.Group>
                     <br />
                     <br />
-                    {/* <Form.Group className="mb-3">
+                    <Form.Group className="mb-3">
                         <Form.Control
                             type="email"
                             placeholder="Enter Email"
@@ -82,7 +86,7 @@ export default function Otp() {
                         {email != "" && !regForEmail.test(email) && (
                             <span className="text-danger">Enter email correctly</span>
                         )}
-                    </Form.Group> */}
+                    </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Control
                             type="password"

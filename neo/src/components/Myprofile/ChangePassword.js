@@ -4,6 +4,9 @@ import { useHistory } from 'react-router';
 import { getProfile, changePass } from '../../config/MyService';
 import MyAccount from './MyAccount';
 import Footer from "../Footer"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 export default function ChangePassword() {
     let [password, setPassword] = useState('');
     let [newpassword, setNewpassword] = useState('');
@@ -11,6 +14,9 @@ export default function ChangePassword() {
     let [user, setUser] = useState('');
     const [errors, setError] = useState({ err_vcode: '', err_npass: '', err_cpass: '', err_email: '' })
     let [otp, setOtp] = useState('')
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
     const vcode = useRef('');
     const History = useHistory()
     const handler = (event) => {
@@ -47,10 +53,10 @@ export default function ChangePassword() {
         changePass(id, data)
             .then(res => {
                 if (res.data.err) {
-                    alert(res.data.err);
+                    failure(res.data.err);
                 }
                 else {
-                    alert(res.data.msg);
+                    success(res.data.msg);
                     History.push('/Profile')
 
                 }

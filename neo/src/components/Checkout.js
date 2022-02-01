@@ -4,6 +4,9 @@ import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
 import { authentication } from '../config/MyService';
 import { useLocation } from 'react-router'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 export default function Checkout() {
     const history = useHistory();
     const [orders, setOrders] = useState([])
@@ -11,20 +14,23 @@ export default function Checkout() {
     const [cart, setCart] = useState([]);
     const location = useLocation();
     console.log(location.state)
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
     let items = [];
     let total = [0];
     useEffect(() => {
         if (localStorage.getItem('_token') != undefined) {
             authentication(localStorage.getItem("_token")).then(res => {
                 if (res.data.err) {
-                    alert(res.data.msg);
+                    // alert(res.data.msg);
                     // console.log(res.data.msg)
 
                 }
             })
         }
         else {
-            alert('Login is Required');
+            warning('Login is Required');
             history.push('/')
         }
         let cartItems = JSON.parse(localStorage.getItem("mycart"));
@@ -45,12 +51,17 @@ export default function Checkout() {
         )
     }
 
+    const goback = () => {
+        history.push("/Cart")
+    }
     return (
 
         <>
 
             <div className="container"><br />
+
                 <h2 className='display-6 text-uppercase text-center' >Check out</h2><br />
+                <button className='btn btn-secondary ' onClick={goback}>Go Back</button>
                 <div className='row'>
                     <div className='col-5  card3' >
                         <label>DEBIT CARD DETAILS</label>

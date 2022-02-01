@@ -13,11 +13,17 @@ import { addAddress, deleteAddr, editAddress, getaddress1 } from '../../config/M
 import { cardaddress } from '../../config/MyService';
 import { useLocation } from 'react-router'
 import Footer from "../Footer"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 export default function Address(props) {
     const [errors, setError] = useState({
         err_oldpass: '', err_npass: '', err_cpass: '', err_fname: '', err_lname: '', err_mobile: '',
         err_address: '', err_pincode: '', err_city: '', err_state: '', err_country: ''
     })
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
     const location = useLocation();
     console.log(location.state)
     const [user, setUser] = useState([]);
@@ -103,6 +109,7 @@ export default function Address(props) {
         setAddress_id(addr.Address_id)
         setShowadd(true);
         console.log(showadd)
+        success("Address Updated Successfully");
     }
 
 
@@ -121,7 +128,10 @@ export default function Address(props) {
             })
 
         setShowadd(false)
-        window.location.reload();
+        success("Address Added Successfully");
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
 
 
     }
@@ -138,6 +148,9 @@ export default function Address(props) {
     //     setStatus(false)
 
     // }
+    const goback = () => {
+        History.push("/checkout")
+    }
     const selectadd = (e, addr) => {
         e.preventDefault();
         let useraddress = { email: localStorage.getItem('user'), selectaddr: addr, orderno: location.state.orderno }
@@ -145,13 +158,17 @@ export default function Address(props) {
             .then((res) => {
                 console.log(res.data)
 
-                alert("ORDERED SUCESSFULLY PLACED")
-                localStorage.removeItem("mycart");
+                success("Address is Selected")
+                // localStorage.removeItem("mycart");
 
             });
 
     }
-
+    const checkout = () => {
+        success("ORDERED SUCESSFULLY PLACED")
+        localStorage.removeItem("mycart");
+        History.push("/Order")
+    }
     const handleShow = () => setShow(true);
 
     return (
@@ -159,6 +176,7 @@ export default function Address(props) {
 
             <Container fluid className='card4'>
                 <Container  >
+                    <button className='btn btn-secondary ' style={{ "marginTop": "20px" }} onClick={goback}>Go Back</button>
                     <h3 className='display-6 text-center'>My Account</h3>
                     <hr />
                     <Row >
@@ -166,7 +184,7 @@ export default function Address(props) {
                             <MyAccount />
                         </Col>
                         <Col lg={6} md={6} sm={12} >
-                            <div className='card1'>
+                            <div className='card11'>
                                 <section >
 
                                     <Row className="pt-2">
@@ -251,7 +269,8 @@ export default function Address(props) {
                                         </Row>
 
                                     )}
-
+                                    <div className='text-center'>
+                                        <button className=' btn btn-danger text-uppercase' style={{ width: "100px" }} onClick={checkout}>Checkout</button></div>
                                 </section>
 
                                 <Modal show={show} onHide={handleClose} >

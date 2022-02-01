@@ -24,6 +24,7 @@ import ProductDetails from './ProductDetails';
 import GMap from './GMap'
 //import MyAccount from './Myaccount';
 import Invoice from "./Invoice"
+import Subcribe from "./Subcribe"
 
 
 export default function NavbarDash(props) {
@@ -87,14 +88,17 @@ export default function NavbarDash(props) {
                   <FaRegUser size="25px" style={{ marginTop: "10px" }} />
                 </a>
                 <ul className="dropdown-menu  mx-auto" aria-labelledby="navbarDropdown">
-                  <li> <a className="dropdown-item" >
-                    <Link to="/Reg" className="nav-link text-dark text-uppercase">Register</Link>
-                  </a></li>
-                  <li>
-                    <a className="dropdown-item" >
-                      <Link to="/" className="nav-link text-dark text-uppercase">Login</Link>
-                    </a>
-                  </li>
+                  {localStorage.getItem('user') == undefined ?
+                    <li> <a className="dropdown-item" >
+                      <Link to="/Reg" className="nav-link text-dark text-uppercase">Register</Link>
+                    </a></li> : " "}
+                  {localStorage.getItem('user') == undefined ?
+                    <li>
+                      <a className="dropdown-item" >
+                        <Link to="/" className="nav-link text-dark text-uppercase">Login</Link>
+                      </a>
+                    </li>
+                    : " "}
                   {localStorage.getItem('user') ?
 
                     <li className="dropdown-item">
@@ -122,6 +126,7 @@ export default function NavbarDash(props) {
       </nav>
 
       <Switch>
+        <Route path="/Subcribe" exact component={Subcribe} />
         <Route path="/Map" exact component={GMap} />
         <Route path="/checkout" exact component={Checkout} />
         <Route path="/Profile" exact component={Profile} />

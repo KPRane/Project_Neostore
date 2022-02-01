@@ -3,7 +3,9 @@ import { useHistory } from "react-router-dom";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { getEmail } from "../config/MyService";
 import Otp from "./Otp";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 const regForEmail = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
 export default function Forgotpassword() {
@@ -14,6 +16,9 @@ export default function Forgotpassword() {
   //   const { name, value } = event.target;
   //   setEmail({ ...state, [name]: value });
   // };
+  const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+  const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+  const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
   const back = () => {
     history.push("/");
   };
@@ -23,10 +28,10 @@ export default function Forgotpassword() {
     };
     getEmail(data).then((res) => {
       if (res.data.err) {
-        alert(res.data.msg);
+        failure(res.data.msg);
       } else {
         history.push("/otp");
-        alert(res.data.msg);
+        success(res.data.msg);
 
       }
     });

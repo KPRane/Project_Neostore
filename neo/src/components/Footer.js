@@ -1,9 +1,33 @@
-import React from "react";
-import { Container, Row, Col, ListGroup } from "react-bootstrap";
+import React, { useState } from "react";
+import { Container, Row, Col, ListGroup, Button } from "react-bootstrap";
 import { AiOutlineMail, AiOutlinePhone } from "react-icons/ai";
 import { HiOutlineLocationMarker } from "react-icons/hi";
+import { useHistory } from 'react-router'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 
 export default function Footer() {
+    const History = useHistory();
+    const [value, setValue] = useState('');
+
+    //For Storing Entered Email by Users
+
+    localStorage.setItem("subscriber", value);
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
+    const subscribe = () => {
+        console.log(value)
+        if (value === '') {
+            warning("please enter valid email to subscribe")
+
+        }
+        else {
+            History.push('/Subcribe')
+        }
+
+    }
     return (
         <footer className="container-fluid bg-dark w-100 ">
             <div >
@@ -72,13 +96,19 @@ export default function Footer() {
                                     Sign Up to get exclusive offer from our favourite brand.
                                 </span>
                             </li><br />
-                            <li className="col-md-4">
+                            <form>
+                                <li><input type="text" placeholder='Your Email...' name="email" onChange={(event) => { setValue(event.target.value) }} required ></input>
+                                    {value != '' && value.length < 4 && <span className="text-danger">Enter email correctly</span>}  </li>
+                                <br />
+                                <li><Button className='btn btn-light' onClick={() => subscribe()}>Subscribe</Button></li>
+                            </form>
+                            {/* <li className="col-md-4">
                                 <input type="email" className="sha form-control" placeholder="Your Email"></input>
                             </li>
                             <br />
                             <li className="col-md-4">
                                 <button className="btn btn-light sha">Subscribe</button>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
                 </div>

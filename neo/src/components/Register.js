@@ -4,15 +4,20 @@ import { AiOutlineGoogle } from 'react-icons/ai'
 import { ImFacebook } from 'react-icons/im'
 import Footer from './Footer'
 import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { Link, Redirect } from 'react-router-dom';
 import SocialButton from './SocialButton'
+toast.configure();
 const regForName = RegExp(/^[A-Za-z]/);
 const regForEve = RegExp(/^(?!^ +$)^.+$/);
 const regForEmail = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 const regForMobile = RegExp(/^[0-9]{10}$/);
 
-
+const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
 export class Register extends Component {
     constructor(props) {
         super(props)
@@ -40,6 +45,7 @@ export class Register extends Component {
             }
         }
     }
+
     handle = (event) => {
         const { name, value } = event.target
 
@@ -52,13 +58,13 @@ export class Register extends Component {
                 else { err.fname = "" }
                 break;
             case 'lname':
-                errors.fname = regForName.test(value) ? '' : 'Enter Valid first Name';
+                errors.lname = regForName.test(value) ? '' : 'Enter Valid Last Name';
                 if (errors.lname !== "") { err.lname = "error" }
                 else { err.lname = "" }
                 break;
 
             case 'mobile':
-                errors.mobile = regForMobile.test(value) ? '' : 'Enter Username';
+                errors.mobile = regForMobile.test(value) ? '' : 'Enter Valid Phone No';
                 if (errors.mobile !== "") { err.mobile = "error" }
                 else { err.mobile = "" }
                 break;
@@ -94,13 +100,13 @@ export class Register extends Component {
                 this.props.history.push("/")
             }
             else {
-                alert("Failed to Register")
+                warning("Failed to Register")
             }
 
 
         }
         else {
-            alert("Please Enter Valid Details");
+            warning("Please Enter Valid Details");
         }
     }
     validate = (errors) => {
@@ -121,9 +127,9 @@ export class Register extends Component {
         }
         addUser(data).then((res) => {
             if (res.data.err) {
-                alert(res.data.err);
+                failure(res.data.err);
             } else {
-                alert(res.data.msg);
+                success(res.data.msg);
                 this.props.history.push("/");
             }
         });
@@ -205,28 +211,28 @@ export class Register extends Component {
                         <br />
                         <form onSubmit={this.formSubmit} method="post">
                             <label>Fisrt Name</label>
-                            <input type="text" name="fname" className="form-control" onChange={this.handle} />
+                            <input type="text" name="fname" className="form-control" onChange={this.handle} required />
                             {errors.fname.length > 0 &&
                                 <span style={{ color: 'red' }}>{errors.fname}</span>}<br />
                             <label> Last Name</label>
-                            <input type="text" name="lname" className="form-control" onChange={this.handle} />
+                            <input type="text" name="lname" className="form-control" onChange={this.handle} required />
                             {errors.lname.length > 0 &&
                                 <span style={{ color: 'red' }}>{errors.lname}</span>}<br />
 
                             <label>Mobile</label>
-                            <input type="text" name="mobile" className="form-control" onChange={this.handle} />
+                            <input type="text" name="mobile" className="form-control" onChange={this.handle} required />
                             {errors.mobile.length > 0 &&
                                 <span style={{ color: 'red' }}>{errors.mobile}</span>}<br />
                             <label>Email</label>
-                            <input type="text" name="email" className="form-control" onChange={this.handle} />
+                            <input type="text" name="email" className="form-control" onChange={this.handle} required />
                             {errors.email.length > 0 &&
                                 <span style={{ color: 'red' }}>{errors.email}</span>}<br />
                             <label>Password</label>
-                            <input type="password" name="password" className="form-control" onChange={this.handle} />
+                            <input type="password" name="password" className="form-control" onChange={this.handle} required />
                             {errors.password.length > 0 &&
                                 <span style={{ color: 'red' }}>{errors.password}</span>}<br />
                             <label>Confirm Password</label>
-                            <input type="password" name="confirm_password" className="form-control" onChange={this.handle} />
+                            <input type="password" name="confirm_password" className="form-control" onChange={this.handle} required />
                             {errors.confirm_password.length > 0 &&
                                 <span style={{ color: 'red' }}>{errors.confirm_password}</span>}<br />
                             <div className="mb-3">

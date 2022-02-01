@@ -1,16 +1,17 @@
 
 import React, { useState, useEffect } from 'react'
-import { login, addUser, getProfile } from '../config/MyService'
+import { login, addUser, getProfile, socialloginuser } from '../config/MyService'
 import Footer from './Footer'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 import SocialButton from './SocialButton'
 import { Container, Col, Row, Form } from "react-bootstrap";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { AiOutlineGoogle } from 'react-icons/ai'
 import { ImDatabase, ImFacebook } from 'react-icons/im'
 import { FaTwitter } from 'react-icons/fa'
-
+toast.configure();
 export default function Login() {
     const [state, setState] = useState({ email: '', password: '', name: '', age: '' });
     const History = useHistory();
@@ -20,30 +21,35 @@ export default function Login() {
     }
     const [info, setInfo] = useState({})
 
-
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
     const handleSocialLogin = (user) => {
         console.log(user);
+        let email = user._profile.email
         let data = {
+
             name: user._profile.firstName,
             lname: user._profile.lastName,
-            mobile: user._profile.id,
-            email: user._profile.email,
+            // mobile: user._profile.lastName,
+            email: email,
             //password: "socialLogin",
         };
-        addUser(data).then((res) => {
+        socialloginuser(data).then((res) => {
             if (res.data.err) {
-                alert(res.data.err);
+                warning(res.data.err);
             } else {
-                alert(res.data.msg);
-                // navigate("/login");
+                success(res.data.msg);
+                window.location.reload(false)
                 localStorage.setItem("_token", res.data.token)
             }
         });
-        localStorage.setItem("user", JSON.stringify(data));
+        localStorage.setItem("user", email);
 
         console.log(user)
         History.push("/Dash");
     };
+
 
     const handleSocialLoginFailure = (err) => {
         console.error(err);
@@ -63,21 +69,31 @@ export default function Login() {
             .then(res => {
                 console.log(res.data)
                 console.log(res.data.msg)
+
                 if (res.data.err) {
-                    alert(res.data.err)
+                    failure(res.data.err)
                 }
                 else {
                     // localStorage.setItem("_token", res.data.token);
                     localStorage.setItem("_token", res.data.token)
                     localStorage.setItem("user", data.email);
                     console.log(state.email)
-                    alert(res.data.msg)
+
                     History.push("/Dash")
-                    window.location.reload();
+
+                    success(res.data.msg)
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
 
                 }
 
             })
+            .catch((err) => {
+                if (err) {
+                    failure("Oops! :-( There is some issue at our Server!")
+                }
+            });
     }
 
     return (
@@ -139,6 +155,7 @@ export default function Login() {
                                         name="email"
                                         className="form-control"
                                         onChange={handler}
+                                        required
                                     />
                                 </div>
                                 <br />

@@ -71,7 +71,7 @@ export default function Order() {
 
                                                 return (
                                                     <div className='row  col-5 ' >
-                                                        <div className=''>
+                                                        <div >
 
                                                             <img src={val.product_image} height="200px" width="200px" className='img-fluid' />&nbsp;
 

@@ -47,6 +47,7 @@ export default function MyAccount() {
                         getImage1();
                     }
                 })
+
         }
         else {
             History.push("/")
@@ -96,7 +97,7 @@ export default function MyAccount() {
 
                 <div className=" text-center col-lg-5 col-md-12 col-sm-12 mt-5" >
                     {/* <HiUserCircle className="text-center" size="200px" /> */}
-                    <img src={mainimage} height="200px" width="200px" className='card1'></img><br /><br />
+                    <img src={mainimage} height="200px" width="200px" className='card10'></img><br /><br />
                     <div >
                         <div className="row">
                             <form onSubmit={onSubmit1}>

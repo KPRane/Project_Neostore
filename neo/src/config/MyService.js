@@ -39,6 +39,9 @@ export function getsingleproduct(data) {
 export function addOrders() {
     return axios.post(`${MAIN_URL}addorder`);
 }
+export function socialloginuser(data) {
+    return axios.post(`${MAIN_URL}socialloginuser`, data);
+}
 export function addUser(data) {
     return axios.post(`${MAIN_URL}adduser`, data);
 }
@@ -76,7 +79,9 @@ export function getProfile(email) {
     return axios.get(`${MAIN_URL}profile/${email}`, {
         headers: { "authorization": `Bearer ${token}` }
     });
-}//get address
+
+}
+//get address
 export function getaddress1(email) {
     return axios.get(`${MAIN_URL}getaddress/${email}`, {
         headers: { "authorization": `Bearer ${token}` }

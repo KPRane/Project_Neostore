@@ -3,17 +3,23 @@ import { getPosts } from '../config/MyService'
 import { connect } from "react-redux";
 // import jwt_decode from 'jwt-decode';
 import Footer from './Footer'
+
+import { useHistory } from 'react-router'
 import NavbarDash from './NavbarDash';
 import { useSelector, useDispatch } from "react-redux";
 import ReactStars from "react-rating-stars-component";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 function Dashboard(props) {
   const [postdata, setPostdata] = useState([])
   const [uid, setUid] = useState('')
   const cart = useSelector((state) => state.cartItems);
   console.log(cart);
-  const dispatch = useDispatch();
-
-
+  const History = useHistory();
+  const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+  const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+  const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
   useEffect(() => {
     getPosts()
       .then(res => {
@@ -21,8 +27,13 @@ function Dashboard(props) {
         // if (res.data.err == 0) {
         //   setPostdata(res.data.product);
         // }
-        setPostdata(res.data.product);
+        setPostdata(res.data.data1);
       })
+      .catch((err) => {
+        if (err) {
+          failure("Oops! :-( There is some issue at our Server!")
+        }
+      });
 
   }, [])
   const addtoCart = (obj) => {
@@ -44,24 +55,39 @@ function Dashboard(props) {
 
       if (idArrays.includes(obj._id)) {
 
-        alert("Product Already Added");
+        warning("Product Already Added");
 
       } else {
         arr.push(item);
         localStorage.setItem("mycart", JSON.stringify(arr));
-        alert("Product Added to Cart");
-        window.location.reload(false);
+        success("Product Added to Cart");
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
 
       }
     } else {
       let arr = [];
       arr.push(item);
       localStorage.setItem("mycart", JSON.stringify(arr));
-      alert("Product Added to Cart");
-      window.location.reload();
+      success("Product Added to Cart");
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
 
     }
   };
+  const singleitem = (id) => {
+    console.log(id)
+
+    History.push(
+      {
+        pathname: '/ProductDetails',
+        // search: id
+        state: { id: id }
+      }
+    )
+  }
   console.log(postdata)
   return (
     <div >
@@ -82,14 +108,14 @@ function Dashboard(props) {
               </div>
             </div>
             <div class="carousel-item">
-              <img src="images/15.jpg" className="d-block w-100 img-fluid" alt="..." height="400px" />
+              <img src="images/33.jpg" className="d-block w-100 img-fluid" alt="..." height="400px" />
               <div class="carousel-caption d-none d-md-block">
                 <h5></h5>
                 <p></p>
               </div>
             </div>
             <div class="carousel-item">
-              <img src="images/16.jpg" className="d-block w-100 h-50 img-fluid" alt="..." />
+              <img src="images/222.jpg" className="d-block w-100 h-50 img-fluid" alt="..." />
               <div class="carousel-caption d-none d-md-block">
                 <h5></h5>
                 <p></p>
@@ -114,7 +140,7 @@ function Dashboard(props) {
             {postdata.map((val, index) =>
               <div className="   col-md-3 col-lg-3 col-md-6">
                 <div className="card1" >
-                  <img src={val.product_image} className="card-img-top" alt="..." height="200px" />
+                  <img src={val.product_image} className="card-img-top" alt="..." height="200px" onClick={() => singleitem(val._id)} />
                   <div className="card-body ">
                     <ReactStars
                       count={5}
@@ -127,9 +153,9 @@ function Dashboard(props) {
                       edit={true}
                       isHalf={true}
                       value={val.product_rating} />
-                    <h5 className="card-title">{val.product_name}</h5>
+                    <h5 className="card-title" onClick={() => singleitem(val._id)}>{val.product_name}</h5>
                     {/* <h5 className="card-title">{val.product_desc}</h5> */}
-                    <p className="card-text">Price:${val.product_cost}</p>
+                    <p className="card-text" >Price:${val.product_cost}</p>
                     {/* <p className="card-text">Dimension:{val.product_dimension}</p> */}
                     {/* <p className="card-text">Material:{val.product_material}</p> */}
                     <div className='text-center'>

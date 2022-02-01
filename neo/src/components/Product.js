@@ -9,7 +9,10 @@ import Footer from './Footer'
 import ProductDetails from './ProductDetails';
 import { BsSortUpAlt, BsSortDown } from "react-icons/bs";
 import { FiStar } from "react-icons/fi";
-import { Container } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
+
 function Product(props) {
     const [show, setShow] = useState(true);
     const [showdata, setshowdata] = useState(1)
@@ -29,22 +32,9 @@ function Product(props) {
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = postdata.slice(indexOfFirstPost, indexOfLastPost);
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
-    // useEffect(() => {
-
-    //   if (localStorage.getItem('_token') != undefined) {
-    //     let token = localStorage.getItem('_token');
-    //     let decode = jwt_decode(token);
-    //     console.log(decode)
-    //     setUid(decode.uid)
-    //     getPosts()
-    //       .then(res => {
-    //         console.log(res.data);
-    //         if (res.data.err == 0) {
-    //           setPostdata(res.data.data);
-    //         }
-    //       })
-    //   }
-    // }, [])
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
     const ratingChanged = () => {
         const sort_products = postdata;
         sort_products.sort(function (a, b) {
@@ -167,21 +157,27 @@ function Product(props) {
 
             if (idArrays.includes(obj._id)) {
 
-                alert("Product Already Added");
+                warning("Product Already Added");
 
             } else {
                 arr.push(item);
                 localStorage.setItem("mycart", JSON.stringify(arr));
-                alert("Product Added to Cart");
-                window.location.reload(false);
+                success("Product Added to Cart");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
+
 
             }
         } else {
             let arr = [];
             arr.push(item);
             localStorage.setItem("mycart", JSON.stringify(arr));
-            alert("Product Added to Cart");
-            window.location.reload();
+
+            success("Product Added to Cart");
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
 
         }
     };
@@ -205,7 +201,7 @@ function Product(props) {
                                 <option value="61cc0950de8b502a31b9e0fa">Sofa & Recliner</option>
                                 <option value="61cc0950de8b502a31b9e0fb">Cabinetry</option>
                             </select><br /><br />
-                            <select className=" btn sha text-center text-uppercase" aria-label="Default select example" name="Color"
+                            <select className=" btn sha text-center " aria-label="Default select example" name="Color"
                                 style={{ width: "150px" }} onChange={handler}>
                                 <option selected value="dummy">Color</option>
                                 <option value="61cc0c7fde8b502a31b9e101">woodenhoney</option>

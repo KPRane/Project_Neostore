@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import MyAccount from './MyAccount';
 import { getProfile, updProfile } from '../../config/MyService';
 import axios from 'axios';
@@ -8,6 +9,7 @@ import '../../App.css';
 import Footer from "../Footer"
 const regForEmail = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
+toast.configure();
 export default function Profile() {
     let [user, setUser] = useState([]);
     // const [file, setFile] = useState("");
@@ -19,7 +21,9 @@ export default function Profile() {
     let [address, setAddress] = useState('');
     let [email, setEmail] = useState('');
 
-
+    const success = (data) => toast.success(data, { position: toast.POSITION.TOP_CENTER });
+    const failure = (data) => toast.error(data, { position: toast.POSITION.TOP_CENTER });
+    const warning = (data) => toast.warn(data, { position: toast.POSITION.TOP_CENTER });
     useEffect(() => {
         getProfile(localStorage.getItem('user'))
             .then(res => {
@@ -44,11 +48,13 @@ export default function Profile() {
         updProfile(id, data)
             .then(res => {
                 if (res.data.err) {
-                    alert(res.data.err);
+                    failure(res.data.err);
                 }
                 else {
-                    alert(res.data.msg);
-                    window.location.reload();
+                    success(res.data.msg);
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
                 }
             })
     }
